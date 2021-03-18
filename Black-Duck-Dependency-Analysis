@@ -1,34 +1,40 @@
-name: Blackduck Dependency Analysis
-# version: 3-16-2021
+name: Dependency Analysis
 
+# Controls when the action will run. 
 on:
-  pull_request:
-    branches:
-      - release
-      - master
+  # Triggers the workflow on push events for the release or master branch
+  # master branch is included because some repos still use that as the base branch.
+  push:
+    branches: [ release, master ]
 
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  upload:
-
+  # This workflow contains a single job called "build"
+  BlackDuck Scan:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    
     strategy:
       # These matrices are referenced in the workflows below to define which versions are run.
       # It will run each possible iteration of the versions defined. i.e. two versions of two 
       # different dependencies will run four total scans.
       matrix:
-        # Most builds are run on node 12, 14 is for future capacity.
+        # Most builds are run on node 12. 14 is for future proofing.
         node-version: [12.x,14.x]
-        # Did not include Java 15 due to limitations in Synopsys scan.
-        # It fails out when attempting to build and needs to be updated.
+        # Did not include Java 15 due to limitations in Synopsys scan. It fails out when attempting to build and needs to be updated.
         java-version: [13.x]
         # Most builds are running 3.8 as of 3-16-2021.
         python-version: [3.8]
-     
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.4
 
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out the repository under $GITHUB_WORKSPACE, so this job can access it
+      - uses: actions/checkout@v2
+      
+      # Sets up ssh agent and saves an access key.  Used in Python Project Setup
       - name: Setup SSH Keys and known_hosts
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
@@ -36,37 +42,46 @@ jobs:
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.TEMP_ACCESS_KEY }}"
 
+      # Sets up the Java JDK for each version defined in the strategy matrix. Java is necessary for Black Duck.
       - name: Use Java JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v1.4.3
         with:
           java-version: ${{ matrix.java-version }}
-
+          
+      # Setup for Node.js for each version in the strategy matrix. Used in Node.js project setup.
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with: 
           node-version: ${{ matrix.node-version }}
-
-      - name: Install Project with npm
-        run: |
-          npm config set //npm.pkg.github.com/:_authToken=${{ secrets.DEVOPS_GITHUB_TOKEN }}
-          npm install --@ncino:registry=https://npm.pkg.github.com/ncino
-
+          
+      # Setup for Python for each version in the strategy matrix. Used in Python Project Setup.
       - name: Use Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with: 
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python-version }}      
+      
+      # Runs project install to create a scannable version of the project.  The auth token uses a github secret ssh token.
+      # The registry target is set here in case a repo does not have a .npmrc file that defines the registry.
+      - name: Node.js Project Setup
+        run: |
+          npm config set //npm.pkg.github.com/:_authToken=${{ secrets.DEVOPS_GITHUB_TOKEN }}
+          npm install --@ncino:registry=https://npm.pkg.github.com/ncino
         
-      - name: Install Project with pipenv
+      # Runs project install to create a scannable version of the project.  
+      # Uses an ssh key created in Setup SSH Keys and known hosts.
+      - name: Python Project Setup
         run: |
           pip install pipenv
           pipenv install --dev
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-
+          
+      # Runs Black Duck scan for NPM and PIP detectors. Authorizes using secrets from github. Requires Java to run.
       - name: Synopsys Detect
         uses: blackducksoftware/github-action@2.0.0
         with:
-          args: '--blackduck.url="${{ secrets.BLACKDUCK_URL }}" \
+          args: 
+            --blackduck.url="${{ secrets.BLACKDUCK_URL }}" \
             --blackduck.api.token="${{ secrets.BLACKDUCK_API_TOKEN }}" \
             --detect.project.name=$GITHUB_REPOSITORY \
             --detect.project.version.name=$GITHUB_BASE_REF \
@@ -74,4 +89,4 @@ jobs:
             --detect.included.detector.types=NPM,PIP \
             --detect.tools=DETECTOR \
             --detect.detector.search.depth=15 \
-            --detect.npm.include.dev.dependencies=false'
+            --detect.npm.include.dev.dependencies=false
