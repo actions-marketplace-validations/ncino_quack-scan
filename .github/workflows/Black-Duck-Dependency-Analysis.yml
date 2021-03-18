@@ -13,7 +13,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  BlackDuck Scan:
+  blackDuck-scan:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     
@@ -58,7 +58,8 @@ jobs:
       - name: Use Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with: 
-          python-version: ${{ matrix.python-version }}      
+          python-version: ${{ matrix.python-version }}   
+        if: github.repository == 'python*'   
       
       # Runs project install to create a scannable version of the project.  The auth token uses a github secret ssh token.
       # The registry target is set here in case a repo does not have a .npmrc file that defines the registry.
@@ -75,6 +76,7 @@ jobs:
           pipenv install --dev
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        if: github.repository == 'python*'   
           
       # Runs Black Duck scan for NPM and PIP detectors. Authorizes using secrets from github. Requires Java to run.
       - name: Synopsys Detect
