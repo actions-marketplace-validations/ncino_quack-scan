@@ -46,9 +46,13 @@ jobs:
           if test -f "package.json"; then 
             echo "NODE_INCLUDED=true" >> $GITHUB_ENV
             echo "Package.json found, will set up Node.js."
+            echo "RUN_SCAN=true" >> $GITHUB_ENV
+            echo "Will run Black Duck Scan."
           else 
             echo "NODE_INCLUDED=false" >> $GITHUB_ENV
             echo "Package.json does not exist, will skip Node.js setup."
+            echo "RUN_SCAN=false" >> $GITHUB_ENV
+            echo "Will not run Black Duck Scan."
           fi
 
       # Setup for Node.js for each version in the strategy matrix. Used in Node.js project setup.
@@ -72,9 +76,13 @@ jobs:
           if test -f "Pipfile"; then 
             echo "PYTHON_INCLUDED=true" >> $GITHUB_ENV
             echo "Pipfile found, will set up Python."
+            echo "RUN_SCAN=true" >> $GITHUB_ENV
+            echo "Will run Black Duck Scan."
           else 
             echo "PYTHON_INCLUDED=false" >> $GITHUB_ENV
             echo "Pipfile does not exist, will skip Python setup."
+            echo "RUN_SCAN=false" >> $GITHUB_ENV
+            echo "Will not run Black Duck Scan."
           fi
 
       # Sets up ssh agent and saves an access key.  Used in Python Project Setup
@@ -109,7 +117,9 @@ jobs:
           echo ${{ env.NODE_INCLUDED }}
 
       # Runs Black Duck scan for NPM and PIP detectors. Authorizes using secrets from github. Requires Java to run.
+      # RUN_SCAN variable is set when either node or python is found in the project.
       - name: Synopsys Detect
+        if: ${{ env.RUN_SCAN == 'true' }}
         uses: blackducksoftware/github-action@2.0.0
         with:
           args: 
