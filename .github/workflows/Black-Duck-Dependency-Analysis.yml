@@ -56,7 +56,7 @@ jobs:
         uses: actions/setup-node@v2
         with: 
           node-version: ${{ matrix.node-version }}
-        if: ${{ env.NODE_INCLUDED }} == true
+        if: ${{ env.NODE_INCLUDED }}
           
       # Runs project install to create a scannable version of the project.  The auth token uses a github secret ssh token.
       # The registry target is set here in case a repo does not have a .npmrc file that defines the registry.
@@ -84,14 +84,14 @@ jobs:
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.TEMP_ACCESS_KEY }}"
-        if: ${{ env.PYTHON_INCLUDED }} == true
+        if: ${{ env.PYTHON_INCLUDED }}
 
       # Setup for Python for each version in the strategy matrix. Used in Python Project Setup.
       - name: Use Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with: 
           python-version: ${{ matrix.python-version }}   
-        if: ${{ env.PYTHON_INCLUDED }} == true
+        if: ${{ env.PYTHON_INCLUDED }}
         
       # Runs project install to create a scannable version of the project.  
       # Uses an ssh key created in Setup SSH Keys and known hosts.
@@ -101,7 +101,7 @@ jobs:
           pipenv install --dev
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        if: ${{ env.PYTHON_INCLUDED }} == true
+        if: ${{ env.PYTHON_INCLUDED }}
 
       - name: Troubleshooting
         run: |
