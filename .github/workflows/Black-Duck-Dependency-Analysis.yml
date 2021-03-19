@@ -54,19 +54,30 @@ jobs:
         with: 
           node-version: ${{ matrix.node-version }}
           
-      # Setup for Python for each version in the strategy matrix. Used in Python Project Setup.
-      - name: Use Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with: 
-          python-version: ${{ matrix.python-version }}   
-        if: github.repository == 'python*'   
-      
       # Runs project install to create a scannable version of the project.  The auth token uses a github secret ssh token.
       # The registry target is set here in case a repo does not have a .npmrc file that defines the registry.
       - name: Node.js Project Setup
         run: |
           npm config set //npm.pkg.github.com/:_authToken=${{ secrets.DEVOPS_GITHUB_TOKEN }}
-          npm install --@ncino:registry=https://npm.pkg.github.com/ncino
+          npm install --@ncino:registry=https://npm.pkg.github.com/ncino          
+
+      # Check for the existence of a pipfile and set a flag to indicate if python is present.
+      - name: Check for Existence of a Pipfile
+        run: |
+          if test -f "Pipfile"; then 
+            echo "python_included=true >> $GITHUB_ENV"
+            echo "Pipfile found, will set up Python."
+          else 
+            echo "python_env=false >> $GITHUB_ENV" 
+            echo "Pipfile does not exist, will skip Python setup."
+          fi
+
+      # Setup for Python for each version in the strategy matrix. Used in Python Project Setup.
+      - name: Use Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with: 
+          python-version: ${{ matrix.python-version }}   
+        if: ${{ env.PYTHON_INCLUDED }} == 'true'
         
       # Runs project install to create a scannable version of the project.  
       # Uses an ssh key created in Setup SSH Keys and known hosts.
@@ -76,7 +87,7 @@ jobs:
           pipenv install --dev
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        if: github.repository == 'python*'   
+        if: ${{ env.PYTHON_INCLUDED }} == 'true'
           
       # Runs Black Duck scan for NPM and PIP detectors. Authorizes using secrets from github. Requires Java to run.
       - name: Synopsys Detect
