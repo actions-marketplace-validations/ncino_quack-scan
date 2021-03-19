@@ -76,7 +76,6 @@ jobs:
         run: |
           echo $PYTHON_INCLUDED
           echo ${{ env.PYTHON_INCLUDED }}
-   #       echo ${{ PYTHON_INCLUDED }}
           printenv
 
       # Setup for Python for each version in the strategy matrix. Used in Python Project Setup.
