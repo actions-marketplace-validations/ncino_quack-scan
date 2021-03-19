@@ -65,22 +65,23 @@ jobs:
       - name: Check for Existence of a Pipfile
         run: |
           if test -f "Pipfile"; then 
-            echo "python_included=true >> $GITHUB_ENV"
+            echo "PYTHON_INCLUDED=true >> $GITHUB_ENV"
             echo "Pipfile found, will set up Python."
           else 
-            echo "python_included=false >> $GITHUB_ENV" 
+            echo "PYTHON_INCLUDED=false >> $GITHUB_ENV" 
             echo "Pipfile does not exist, will skip Python setup."
           fi
 
       - name: TROUBLESHOOTING
-        run: echo ${{ env.python_included }}
+        run: echo $PYTHON_INCLUDED
+
 
       # Setup for Python for each version in the strategy matrix. Used in Python Project Setup.
       - name: Use Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with: 
           python-version: ${{ matrix.python-version }}   
-        if: ${{ env.python_included }} == 'true'
+        if: $PYTHON_INCLUDED == 'true'
         
       # Runs project install to create a scannable version of the project.  
       # Uses an ssh key created in Setup SSH Keys and known hosts.
@@ -90,7 +91,7 @@ jobs:
           pipenv install --dev
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        if: ${{ env.python_included }} == 'true'
+        if: $PYTHON_INCLUDED == 'true'
 
       # Runs Black Duck scan for NPM and PIP detectors. Authorizes using secrets from github. Requires Java to run.
       - name: Synopsys Detect
