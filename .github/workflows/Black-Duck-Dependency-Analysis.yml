@@ -67,9 +67,11 @@ jobs:
           if test -f "Pipfile"; then 
             echo "python_included=true >> $GITHUB_ENV"
             echo "Pipfile found, will set up Python."
+            echo ${{ env.PYTHON_INCLUDED }}
           else 
             echo "python_env=false >> $GITHUB_ENV" 
             echo "Pipfile does not exist, will skip Python setup."
+            echo ${{ env.PYTHON_INCLUDED }}
           fi
 
       # Setup for Python for each version in the strategy matrix. Used in Python Project Setup.
