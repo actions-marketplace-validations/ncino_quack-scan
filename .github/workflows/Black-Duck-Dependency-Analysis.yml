@@ -114,7 +114,7 @@ jobs:
       # Runs Black Duck scan for NPM and PIP detectors. Authorizes using secrets from github. Requires Java to run.
       # RUN_SCAN variable is set when either node or python is found in the project.
       - name: Synopsys Detect
-      #  if: ${{ env.RUN_SCAN == 'true' }}
+        if: ${{ env.RUN_SCAN == 'true' }}
         uses: blackducksoftware/github-action@2.0.0
         with:
           args: 
