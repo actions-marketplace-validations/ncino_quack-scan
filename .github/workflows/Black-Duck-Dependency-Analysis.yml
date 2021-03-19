@@ -27,7 +27,7 @@ jobs:
         # Did not include Java 15 due to limitations in Synopsys scan. It fails out when attempting to build and needs to be updated.
         java-version: [13.x]
         # Most builds are running 3.8 as of 3-16-2021.
-        python-version: [3.8]
+        python-version: [3.8.x]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -111,11 +111,6 @@ jobs:
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
-      - name: Troubleshooting
-        run: |
-          echo ${{ env.PYTHON_INCLUDED }}
-          echo ${{ env.NODE_INCLUDED }}
-
       # Runs Black Duck scan for NPM and PIP detectors. Authorizes using secrets from github. Requires Java to run.
       # RUN_SCAN variable is set when either node or python is found in the project.
       - name: Synopsys Detect
@@ -125,7 +120,7 @@ jobs:
           args: 
             --blackduck.url="${{ secrets.BLACKDUCK_URL }}" \
             --blackduck.api.token="${{ secrets.BLACKDUCK_API_TOKEN }}" \
-            --detect.project.name=$GITHUB_REPOSITORY.name \
+            --detect.project.name=${{ github.event.repository.name }} \
             --detect.project.version.name=${GITHUB_REF##*/} \
             --detect.required.detector.types=NPM \
             --detect.included.detector.types=NPM,PIP \
