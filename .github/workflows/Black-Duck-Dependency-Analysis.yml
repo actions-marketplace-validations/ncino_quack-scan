@@ -88,6 +88,11 @@ jobs:
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         if: ${{ env.PYTHON_INCLUDED }} == 'true'
+
+      - name: troubleshooting
+        run: |
+          printenv
+          cat $GITHUB_BASE_REF
           
       # Runs Black Duck scan for NPM and PIP detectors. Authorizes using secrets from github. Requires Java to run.
       - name: Synopsys Detect
@@ -97,7 +102,7 @@ jobs:
             --blackduck.url="${{ secrets.BLACKDUCK_URL }}" \
             --blackduck.api.token="${{ secrets.BLACKDUCK_API_TOKEN }}" \
             --detect.project.name=$GITHUB_REPOSITORY \
-            --detect.project.version.name=build \
+            --detect.project.version.name=$GITHUB_BASE_REF \
             --detect.required.detector.types=NPM \
             --detect.included.detector.types=NPM,PIP \
             --detect.tools=DETECTOR \
