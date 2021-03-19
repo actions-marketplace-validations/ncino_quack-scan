@@ -53,7 +53,7 @@ jobs:
 
       # Setup for Node.js for each version in the strategy matrix. Used in Node.js project setup.
       - name: Use Node.js ${{ matrix.node-version }}
-        if: ${{ env.NODE_INCLUDED }} == "true"
+        if: ${{ env.NODE_INCLUDED  == 'true' }}
         uses: actions/setup-node@v2
         with: 
           node-version: ${{ matrix.node-version }}
@@ -61,7 +61,7 @@ jobs:
       # Runs project install to create a scannable version of the project.  The auth token uses a github secret ssh token.
       # The registry target is set here in case a repo does not have a .npmrc file that defines the registry.
       - name: Node.js Project Setup
-        if: ${{ env.NODE_INCLUDED }} == "true"
+        if: ${{ env.NODE_INCLUDED == 'true' }}
         run: |
           npm config set //npm.pkg.github.com/:_authToken=${{ secrets.DEVOPS_GITHUB_TOKEN }}
           npm install --@ncino:registry=https://npm.pkg.github.com/ncino          
@@ -79,7 +79,7 @@ jobs:
 
       # Sets up ssh agent and saves an access key.  Used in Python Project Setup
       - name: Setup SSH Keys and known_hosts
-        if: ${{ env.PYTHON_INCLUDED }} == "true"
+        if: ${{ env.PYTHON_INCLUDED == 'true' }}
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
@@ -88,7 +88,7 @@ jobs:
 
       # Setup for Python for each version in the strategy matrix. Used in Python Project Setup.
       - name: Use Python ${{ matrix.python-version }}
-        if: ${{ env.PYTHON_INCLUDED }} == "true"
+        if: ${{ env.PYTHON_INCLUDED == 'true' }}
         uses: actions/setup-python@v2
         with: 
           python-version: ${{ matrix.python-version }}   
@@ -96,7 +96,7 @@ jobs:
       # Runs project install to create a scannable version of the project.  
       # Uses an ssh key created in Setup SSH Keys and known hosts.
       - name: Python Project Setup
-        if: ${{ env.PYTHON_INCLUDED }} == "true"
+        if: ${{ env.PYTHON_INCLUDED == 'true' }}
         run: |
           pip install pipenv
           pipenv install --dev
