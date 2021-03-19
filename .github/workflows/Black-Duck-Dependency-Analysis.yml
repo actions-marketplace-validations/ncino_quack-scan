@@ -65,10 +65,10 @@ jobs:
       - name: Check for Existence of a Pipfile
         run: |
           if test -f "Pipfile"; then 
-            echo "PYTHON_INCLUDED=true >> $GITHUB_ENV"
+            echo "PYTHON_INCLUDED=true" >> $GITHUB_ENV
             echo "Pipfile found, will set up Python."
           else 
-            echo "PYTHON_INCLUDED=false >> $GITHUB_ENV" 
+            echo "PYTHON_INCLUDED=false" >> $GITHUB_ENV
             echo "Pipfile does not exist, will skip Python setup."
           fi
 
@@ -76,7 +76,6 @@ jobs:
         run: |
           echo $PYTHON_INCLUDED
           echo ${{ env.PYTHON_INCLUDED }}
-          printenv
 
       # Setup for Python for each version in the strategy matrix. Used in Python Project Setup.
       - name: Use Python ${{ matrix.python-version }}
