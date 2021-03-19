@@ -33,26 +33,30 @@ jobs:
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE, so this job can access it
       - uses: actions/checkout@v2
-      
-      # Sets up ssh agent and saves an access key.  Used in Python Project Setup
-      - name: Setup SSH Keys and known_hosts
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add - <<< "${{ secrets.TEMP_ACCESS_KEY }}"
 
       # Sets up the Java JDK for each version defined in the strategy matrix. Java is necessary for Black Duck.
       - name: Use Java JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v1.4.3
         with:
           java-version: ${{ matrix.java-version }}
-          
+
+      # Check for the existence of a pipfile and set a flag to indicate if python is present.
+      - name: Check for Existence of a Package.json
+        run: |
+          if test -f "package.json"; then 
+            echo "NODE_INCLUDED=true" >> $GITHUB_ENV
+            echo "Package.json found, will set up Node.js."
+          else 
+            echo "NODE_INCLUDED=false" >> $GITHUB_ENV
+            echo "Package.json does not exist, will skip Node.js setup."
+          fi
+
       # Setup for Node.js for each version in the strategy matrix. Used in Node.js project setup.
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with: 
           node-version: ${{ matrix.node-version }}
+        if: $NODE_INCLUDED == 'true'
           
       # Runs project install to create a scannable version of the project.  The auth token uses a github secret ssh token.
       # The registry target is set here in case a repo does not have a .npmrc file that defines the registry.
@@ -60,6 +64,7 @@ jobs:
         run: |
           npm config set //npm.pkg.github.com/:_authToken=${{ secrets.DEVOPS_GITHUB_TOKEN }}
           npm install --@ncino:registry=https://npm.pkg.github.com/ncino          
+        if: $NODE_INCLUDED == 'true'
 
       # Check for the existence of a pipfile and set a flag to indicate if python is present.
       - name: Check for Existence of a Pipfile
@@ -72,17 +77,21 @@ jobs:
             echo "Pipfile does not exist, will skip Python setup."
           fi
 
-      - name: TROUBLESHOOTING
+      # Sets up ssh agent and saves an access key.  Used in Python Project Setup
+      - name: Setup SSH Keys and known_hosts
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
-          echo $PYTHON_INCLUDED
-          echo ${{ env.PYTHON_INCLUDED }}
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add - <<< "${{ secrets.TEMP_ACCESS_KEY }}"
+        if: $PYTHON_INCLUDED == 'true'
 
       # Setup for Python for each version in the strategy matrix. Used in Python Project Setup.
       - name: Use Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with: 
           python-version: ${{ matrix.python-version }}   
-      #  if: ${{ PYTHON_INCLUDED }} == 'true'
+        if: $PYTHON_INCLUDED == 'true'
         
       # Runs project install to create a scannable version of the project.  
       # Uses an ssh key created in Setup SSH Keys and known hosts.
@@ -92,7 +101,7 @@ jobs:
           pipenv install --dev
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-      #  if: ${{ PYTHON_INCLUDED }} == 'true'
+        if: $PYTHON_INCLUDED == 'true'
 
       # Runs Black Duck scan for NPM and PIP detectors. Authorizes using secrets from github. Requires Java to run.
       - name: Synopsys Detect
