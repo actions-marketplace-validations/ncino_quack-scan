@@ -101,7 +101,7 @@ jobs:
           pipenv install --dev
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        if: $PYTHON_INCLUDED == 'true'
+        if: ${{ env.PYTHON_INCLUDED }} == 'true'
 
       # Runs Black Duck scan for NPM and PIP detectors. Authorizes using secrets from github. Requires Java to run.
       - name: Synopsys Detect
