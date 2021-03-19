@@ -81,7 +81,7 @@ jobs:
         uses: actions/setup-python@v2
         with: 
           python-version: ${{ matrix.python-version }}   
-        if: $PYTHON_INCLUDED == 'true'
+        if: ${{ PYTHON_INCLUDED }} == 'true'
         
       # Runs project install to create a scannable version of the project.  
       # Uses an ssh key created in Setup SSH Keys and known hosts.
@@ -91,7 +91,7 @@ jobs:
           pipenv install --dev
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        if: $PYTHON_INCLUDED == 'true'
+        if: ${{ PYTHON_INCLUDED }} == 'true'
 
       # Runs Black Duck scan for NPM and PIP detectors. Authorizes using secrets from github. Requires Java to run.
       - name: Synopsys Detect
