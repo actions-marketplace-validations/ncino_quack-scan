@@ -24,7 +24,7 @@ jobs:
       matrix:
         # Most builds are run on node 12. 14 is for future proofing.
         node-version: [12.x,14.x]
-        # Did not include Java 15 due to limitations in Synopsys scan. It fails out when attempting to build and needs to be updated.
+        # Did not include Java 15 due to limitations in Synopsys scan. It fails out when attempting to build and needs to be updated by BD.
         java-version: [13.x]
         # Most builds are running 3.8 as of 3-16-2021.
         python-version: [3.8.x]
@@ -86,7 +86,7 @@ jobs:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add - <<< "${{ secrets.TEMP_ACCESS_KEY }}"
+          ssh-add - <<< "${{ secrets.DEVOPS_GITHUB_TOKEN }}"
 
       # Setup for Python for each version in the strategy matrix. Used in Python Project Setup.
       - name: Use Python ${{ matrix.python-version }}
@@ -128,3 +128,7 @@ jobs:
             --detect.tools=DETECTOR \
             --detect.detector.search.depth=15 \
             --detect.npm.include.dev.dependencies=false
+
+
+
+
