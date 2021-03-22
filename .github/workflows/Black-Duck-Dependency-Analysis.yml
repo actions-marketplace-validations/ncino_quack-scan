@@ -34,7 +34,8 @@ jobs:
       # Checks-out the repository under $GITHUB_WORKSPACE, so this job can access it
       - uses: actions/checkout@v2
 
-      # Check for the existence of a pipfile and set a flag to indicate if python is present.
+      # Check for the existence of a Package.json and set a flag to indicate if Node.js is present.
+      # Also sets a flag to indicate scanning should take place if Node.js is found.
       - name: Check for Existence of a Package.json
         run: |
           if test -f "package.json"; then 
@@ -65,6 +66,7 @@ jobs:
           npm install --@ncino:registry=https://npm.pkg.github.com/ncino          
 
       # Check for the existence of a pipfile and set a flag to indicate if python is present.
+      # Also sets a flag to indicate scanning should take place if Python is found.
       - name: Check for Existence of a Pipfile
         run: |
           if test -f "Pipfile"; then 
