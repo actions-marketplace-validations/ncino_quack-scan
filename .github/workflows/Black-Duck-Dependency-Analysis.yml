@@ -34,12 +34,6 @@ jobs:
       # Checks-out the repository under $GITHUB_WORKSPACE, so this job can access it
       - uses: actions/checkout@v2
 
-      # Sets up the Java JDK for each version defined in the strategy matrix. Java is necessary for Black Duck.
-      - name: Use Java JDK ${{ matrix.java-version }}
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: ${{ matrix.java-version }}
-
       # Check for the existence of a pipfile and set a flag to indicate if python is present.
       - name: Check for Existence of a Package.json
         run: |
@@ -110,6 +104,13 @@ jobs:
           pipenv install --dev
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
+      # Sets up the Java JDK for each version defined in the strategy matrix. Java is necessary for Black Duck.
+      - name: Use Java JDK ${{ matrix.java-version }}
+        if: ${{ env.RUN_SCAN == 'true' }}
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: ${{ matrix.java-version }}
 
       # Runs Black Duck scan for NPM and PIP detectors. Authorizes using secrets from github. Requires Java to run.
       # RUN_SCAN variable is set when either node or python is found in the project.
