@@ -1,3 +1,5 @@
 name: quack
 description: Run static code dependency scan.
+runs: 
+  using: node12
 author: ncino
