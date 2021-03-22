@@ -1,5 +1,6 @@
 name: quack
 description: Run static code dependency scan.
 runs: 
-  using: node12
+  using: 'node12'
+  main: 'Black-Duck-Dependency-Analysis.yml'
 author: ncino
