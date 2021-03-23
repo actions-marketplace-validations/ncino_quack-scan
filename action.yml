@@ -3,7 +3,7 @@ author: 'quack-scan'
 description: 'Run static code dependency scan using Black Duck Synopsys scan for NPM and PIP. '
 runs: 
   using: 'node12'
-  main: 'Black-Duck-Dependency-Analysis.yml'
+  main: '.github/workflows/quack-scan.yml'
 branding:
   icon: 'box'  
   color: 'yellow'
