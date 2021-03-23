@@ -1,6 +1,8 @@
-name: 'quack'
+name: 'quack-quack'
 author: 'quack-quack'
 description: 'Run static code dependency scan using Black Duck Synopsys scan for NPM and PIP. '
 runs: 
   using: 'node12'
   main: 'Black-Duck-Dependency-Analysis.yml'
+icon: box
+color: yellow
