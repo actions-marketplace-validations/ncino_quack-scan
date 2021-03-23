@@ -4,5 +4,6 @@ description: 'Run static code dependency scan using Black Duck Synopsys scan for
 runs: 
   using: 'node12'
   main: 'Black-Duck-Dependency-Analysis.yml'
-icon: 'box'
-color: 'yellow'
+branding:
+  icon: 'box'  
+  color: 'yellow'
