@@ -63,7 +63,7 @@ jobs:
         if: ${{ env.NODE_INCLUDED == 'true' }}
         run: |
           npm config set //npm.pkg.github.com/:_authToken=${{ secrets.DEVOPS_GITHUB_TOKEN }}
-          npm install --@ncino:registry=https://npm.pkg.github.com/ncino          
+          npm install --@ncino:registry=${{ secrets.NCINO_NPM_REGISTRY }}         
 
       # Check for the existence of a pipfile and set a flag to indicate if python is present.
       # Also sets a flag to indicate scanning should take place if Python is found.
