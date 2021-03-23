@@ -88,7 +88,7 @@ jobs:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add - <<< "${{ secrets.DEVOPS_GITHUB_TOKEN }}"
+          ssh-add - <<< "${{ secrets.NCINO_PRIVATE_SSH_KEY }}"
 
       # Setup for Python for each version in the strategy matrix. Used in Python Project Setup.
       - name: Use Python ${{ matrix.python-version }}
