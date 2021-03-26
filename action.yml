@@ -1,9 +1,13 @@
 name: 'quack-scan'
 author: 'quack-scan'
 description: 'Run static code dependency scan using Black Duck Synopsys scan for NPM and PIP. '
-runs: 
-  using: 'node12'
-  main: '.github/workflows/quack-scan.yml'
+
+runs:
+  using: "composite"
+  steps:
+    - run: ${{ github.action_path }}
+      shell: bash
+
 branding:
   icon: 'box'  
   color: 'yellow'
