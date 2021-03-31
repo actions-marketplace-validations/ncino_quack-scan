@@ -8,20 +8,26 @@
 
     <!-- Best Practices -->
     <rule ref="category/apex/bestpractices.xml">
+    </rule>
 
     <!-- Code Style -->
     <rule ref="category/apex/codestyle.xml">
+    </rule>
 
     <!-- Design -->
     <rule ref="category/apex/design.xml">
+    </rule>
 
     <!-- Error Prone -->
     <rule ref="category/apex/errorprone.xml">
+    </rule>
 
     <!-- Performance -->
     <rule ref="category/apex/performance.xml">
+    </rule>
 
     <!-- Security -->
     <rule ref="category/apex/security.xml">
+    </rule>
 
 </ruleset>
