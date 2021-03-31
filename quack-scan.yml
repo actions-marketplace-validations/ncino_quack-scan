@@ -146,7 +146,3 @@ jobs:
             --detect.tools=DETECTOR \
             --detect.detector.search.depth=15 \
             --detect.npm.include.dev.dependencies=false
-
-
-
-
