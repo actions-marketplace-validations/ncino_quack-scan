@@ -91,5 +91,14 @@ runs:
     # Setup Python Project
     # Setup Java
     # Run Synopsys Scan
-    - run: "bash <(curl -s -L https://detect.synopsys.com/detect.sh)"
+    - run: "bash <(curl -s -L https://detect.synopsys.com/detect.sh) \
+                --blackduck.url=${{ inputs.bd_url }} \
+                --blackduck.api.token=${{ inputs.bd_api_token }} \
+                --detect.project.name=${{ inputs.detect_project_name }} \
+                --detect.project.version.name=${{ inputs.detect_project_version_name }}  \
+                --detect.required.detector.types=${{ inputs.detect_required_detector_types }} \
+                --detect.included.detector.types=${{ inputs.detect_included_detector_types }} \
+                --detect.tools=${{ inputs.detect_tools }} \
+                --detect.detector.search.depth=${{ inputs.detect_detector_search_depth }} \
+                --detect.npm.include.dev.dependencies=${{ inputs.detect_npm_include_dev_dependencies }}"
       shell: bash
