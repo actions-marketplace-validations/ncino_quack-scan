@@ -9,12 +9,10 @@ branding:
 inputs:
   bd_url:
     description:    'URL of the Black Duck server.'
-    required:       false
-    default:        '${{ secrets.BLACKDUCK_URL }}'
+    required:       true
   bd_api_token:
     description:    'The API token used to authenticate with the Black Duck Server.'
-    required:       false
-    default:        '${{ secrets.BLACKDUCK_API_TOKEN }}'
+    required:       true
   detect_project_name:
     description:    'An override for the name to use for the Black Duck project. 
                     If not supplied, Detect will attempt to use the tools to figure 
