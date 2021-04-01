@@ -64,32 +64,9 @@ inputs:
     required: false
     default: 'false'
 
-outputs:
-  bd_exit_code:
-    description:    '0 is a success, 1 is a failure to connect, 3 found policy violations.
-                    Full code available at https://blackducksoftware.github.io/synopsys-detect/6.0.0/exit-codes/.'
-    value: ${{ steps.bd_scan.outputs.bd_exit_code }}    
-
-  # steps:
-  #   - id: random-number-generator
-  #     run: echo "::set-output name=random-id::$(echo $RANDOM)"
-  #     shell: bash
-
 runs:
   using: "composite"
   steps:
-    # Check for Node.js
-    # Setup Node.js Project
-    # Check for Python
-    # Setup Python Project
-    
-    # Setup Java
-    - run: |
-        apt install default-jre
-        apt install openjdk-13-jre-headless
-
-      shell: bash
-
     # Run Synopsys Scan
     - run: "bash <(curl -s -L https://detect.synopsys.com/detect.sh) \
                 --blackduck.url=${{ inputs.bd_url }} \
