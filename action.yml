@@ -1,9 +1,7 @@
 name: 'quack-scan'
 author: 'quack-scan'
 description: 'Run static code dependency scan using Black Duck Synopsys scan 
-              for NPM and PIP using Synopsys 6.0. For details on properties 
-              and the Black Duck Synopsis scan refer to their documentation.  
-              Not all configurations settings are available.'
+              for NPM and PIP using Synopsys 6.0.'
 branding:
   icon: 'feather'  
   color: 'yellow'
