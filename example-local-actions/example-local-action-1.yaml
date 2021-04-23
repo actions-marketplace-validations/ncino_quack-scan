@@ -1,0 +1,58 @@
+name: quack-scan
+
+on:
+  pull_request:
+    branch: -release
+
+  # Allows you to run this workflow manually from the Actions tab. Only works after being merged into main branch.
+  workflow_dispatch:
+
+jobs:
+  quack-scan:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [ 12.x ]
+        java-version: [ 13.x ]
+
+    steps:
+      - uses: actions/checkout@v2
+
+######################################
+### Node.js Setup and Installation ###
+######################################
+      - name: Cache Node Modules
+        if: ${{ env.NODE_INCLUDED  == 'true' }}
+        id: node-cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        if: ${{ env.NODE_INCLUDED == 'true' && steps.node-cache.outputs.cache-hit != 'true' }}
+        uses: actions/setup-node@v2
+        with: 
+          node-version: ${{ matrix.node-version }}
+          
+      - name: Node.js Project Setup
+        if: ${{ env.NODE_INCLUDED == 'true' && steps.node-cache.outputs.cache-hit != 'true' }}
+        run: npm install 
+
+#####################################
+### Black Duck Scan Setup and Run ###
+#####################################
+      # Sets up the Java JDK for each version defined in the strategy matrix. Java is necessary for Black Duck.
+      - name: Use Java JDK ${{ matrix.java-version }}
+        if: ${{ env.RUN_SCAN == 'true' }}
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: ${{ matrix.java-version }}
+
+      # Run BD scan 
+      - name: quack-scan
+        uses: ncino/quack-scan@v1
+        with: 
+          bd_url: ${{ secrets.BLACKDUCK_URL }}
+          bd_api_token: ${{ secrets.BLACKDUCK_API_TOKEN }}
