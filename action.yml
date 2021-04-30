@@ -85,7 +85,7 @@ inputs:
                     performs the same basic function as detect.detector.search.exclusion,
                     but lets you be more specific.'
     required: false
-    default: ''
+    default: 'holy-guacamole'
   
   detect_detector_search_exclusion_defaults:
     description:    'If true, the bom tool search will exclude the default directory names.
@@ -101,7 +101,7 @@ inputs:
                     which detectors to run, subdirectories whose name match a pattern 
                     in this list will not be searched.'
     required: false
-    default: ''
+    default: 'neato-burrito'
 
 #########################
 ###  Composite Steps  ###
