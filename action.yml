@@ -120,7 +120,7 @@ runs:
                 --detect.tools=${{ inputs.detect_tools }} \
                 --detect.detector.search.depth=${{ inputs.detect_detector_search_depth }} \
                 --detect.npm.include.dev.dependencies=${{ inputs.detect_npm_include_dev_dependencies }} \
-                --detect.detector.search.exclusion.paths=${{ detect_detector_search_exclusion_paths }} \
-                --detect.detector.search.exclusion.defaults=${{ detect_detector_search_exclusion_defaults }} \
-                --detect.detector.search.exclusion.patterns=${{ detect_detector_search_exclusion_patterns }}"
+                --detect.detector.search.exclusion.paths=${{ inputs.detect_detector_search_exclusion_paths }} \
+                --detect.detector.search.exclusion.defaults=${{ inputs.detect_detector_search_exclusion_defaults }} \
+                --detect.detector.search.exclusion.patterns=${{ inputs.detect_detector_search_exclusion_patterns }}"
       shell: bash

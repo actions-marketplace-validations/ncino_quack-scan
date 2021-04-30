@@ -147,7 +147,6 @@ jobs:
         with: 
           bd_url: ${{ secrets.BLACKDUCK_URL }}
           bd_api_token: ${{ secrets.BLACKDUCK_API_TOKEN }}
-          detect_detector_search_depth: "0"
 
       # If there was a failure in running post an alert to Slack.  
       - name: Send Alert to Slack on a Failure
