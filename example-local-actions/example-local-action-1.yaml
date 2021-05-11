@@ -2,7 +2,8 @@ name: quack-scan
 
 on:
   pull_request:
-    branch: -release
+    branch: 
+      - release
 
   # Allows you to run this workflow manually from the Actions tab. Only works after being merged into main branch.
   workflow_dispatch:

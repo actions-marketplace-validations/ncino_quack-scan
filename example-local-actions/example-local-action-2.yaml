@@ -1,9 +1,10 @@
 name: quack-scan
 
-on:  
-  release:    
-    types:  
-      - created
+on:
+  pull_request:
+    branch: 
+      - release
+      - master
 
   # Allows you to run this workflow manually from the Actions tab. Only works after being merged into main branch.
   workflow_dispatch:
@@ -147,7 +148,6 @@ jobs:
         with: 
           bd_url: ${{ secrets.BLACKDUCK_URL }}
           bd_api_token: ${{ secrets.BLACKDUCK_API_TOKEN }}
-          detect_detector_search_exclusion_patterns: 'staticresources'
 
       # If there was a failure in running post an alert to Slack.  
       - name: Send Alert to Slack on a Failure
